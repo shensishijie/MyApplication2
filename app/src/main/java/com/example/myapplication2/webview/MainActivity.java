@@ -1,20 +1,27 @@
-package com.example.myapplication2.view;
+package com.example.myapplication2.webview;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
 import com.example.myapplication2.R;
+import com.example.myapplication2.homepage.Homepage;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.KeyEvent.KEYCODE_ENTER;
@@ -24,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private WebView webView;
     //搜索栏
     private EditText url;
+
+    private ProgressBar progressBar;
 
     private Button search;
 
@@ -42,9 +51,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        WebViewModel webViewModel =new ViewModelProvider(this).get(WebViewModel.class);
 
         webView = (WebView) findViewById(R.id.web_view);
         url = (EditText) findViewById(R.id.url);
+        progressBar = (ProgressBar) findViewById((R.id.progress_bar));
         search = (Button) findViewById(R.id.search);
         go_for = (Button) findViewById(R.id.go_for);
         go_next = (Button) findViewById(R.id.go_next);
@@ -70,10 +81,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         webView.getSettings().setLoadWithOverviewMode(true);
         //设置解码 html 页面时使用的默认文本编码名称
         webView.getSettings().setDefaultTextEncodingName("utf-8");
+        // 将图片调整到适合 WebView 的大小
+        webView.getSettings().setUseWideViewPort(true);
+        // 缩放至屏幕的大小
+        webView.getSettings().setLoadWithOverviewMode(true);
+        // 支持缩放，默认为true。是下面那个的前提。
+        webView.getSettings().setSupportZoom(true);
+        // 设置内置的缩放控件。若为false，则该 WebView 不可缩放
+        webView.getSettings().setBuiltInZoomControls(true);
+        // 隐藏原生的缩放控件
+        webView.getSettings().setDisplayZoomControls(false);
+        // 缓存
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        // 设置可以访问文件
+        webView.getSettings().setAllowFileAccess(true);
+        // 支持通过JS打开新窗口
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        // 支持自动加载图片
+        webView.getSettings().setLoadsImagesAutomatically(true);
 
-        webView.loadUrl("https://www.baidu.com/");
+        //webView.loadUrl("https://www.baidu.com/");
         //设置前进或后退步数
         webView.goBackOrForward(1);
+
+        //加载homepage中输入的网址或者搜索内容
+        search(getIntent().getStringExtra("url0"));
+
+        //设置进度条显示
+        webView.setWebChromeClient(new WebChromeClient(){
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if (newProgress == 100) {
+                    progressBar.setVisibility(View.GONE);
+                    url.setText(webView.getTitle());
+                } else {
+                    progressBar.setVisibility(View.VISIBLE);
+                    progressBar.setProgress(newProgress); //刷新进度值
+                }
+            }
+        });
 
 
         //监听键盘回车搜索
@@ -83,10 +130,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if((keyCode == KEYCODE_ENTER) && event.getAction() == KeyEvent.ACTION_DOWN) {
                     onClick(search);
                 }
-                url.setSelection(url.getText().toString().length());
+                //url.setSelection(url.getText().toString().length());
                 return false;
             }
         });
+    }
+
+    private void search(String url_name) {
+        String url_name1;
+        if((!url_name.startsWith("https://")) && (!url_name.startsWith("http://"))) {
+            url_name1 = "https://" + url_name;
+        } else {
+            url_name1 = url_name;
+        }
+        if(Patterns.WEB_URL.matcher(url_name1).matches()){
+            webView.loadUrl(url_name1);
+        } else {
+            webView.loadUrl("https://www.baidu.com/s?wd=" + url_name);
+        }
     }
     //同步系统返回键
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -101,17 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.search:
-                String url_name;
-                if((!url.getText().toString().startsWith("https://")) && (!url.getText().toString().startsWith("http://"))) {
-                     url_name = "https://" + url.getText().toString();
-                } else {
-                    url_name =url.getText().toString();;
-                }
-                if(Patterns.WEB_URL.matcher(url_name).matches()){
-                    webView.loadUrl(url_name);
-                } else {
-                    webView.loadUrl("https://www.baidu.com/s?wd=" + url.getText().toString());
-                }
+                search(url.getText().toString());
                 break;
             case R.id.go_for:
                 if(webView.canGoBack()) {
@@ -130,8 +181,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.go_home:
-                Toast.makeText(MainActivity.this,"这里应该进入主页",
-                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent("android.intent.action.MAIN");
+                startActivity(intent);
                 break;
             case R.id.refresh:
                 webView.loadUrl(webView.getUrl().toString());
@@ -147,10 +198,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        webView.removeAllViews();
-        webView.destroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        webView.removeAllViews();
+//        webView.destroy();
+//    }
 }
