@@ -1,12 +1,12 @@
 package com.example.myapplication2.webview;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,12 +21,11 @@ import android.widget.Toast;
 
 
 import com.example.myapplication2.R;
-import com.example.myapplication2.homepage.Homepage;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.KeyEvent.KEYCODE_ENTER;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class WebViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     private WebView webView;
     //搜索栏
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_webview);
         WebViewModel webViewModel =new ViewModelProvider(this).get(WebViewModel.class);
 
         webView = (WebView) findViewById(R.id.web_view);
@@ -102,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //webView.loadUrl("https://www.baidu.com/");
         //设置前进或后退步数
+
         webView.goBackOrForward(1);
 
         //加载homepage中输入的网址或者搜索内容
@@ -115,10 +115,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (newProgress == 100) {
                     progressBar.setVisibility(View.GONE);
                     url.setText(webView.getTitle());
+                    url.setSelection(url.getText().toString().length());
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     progressBar.setProgress(newProgress); //刷新进度值
                 }
+            }
+        });
+
+        webView.setWebViewClient(new WebViewClient(){
+//            @Override
+//            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+//                super.onPageStarted(view, url, favicon);
+//            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+
+                webViewModel.getCurrentUrl().setValue(webView.getUrl());
+                webViewModel.getCurrentTitle().setValue(webView.getTitle());
             }
         });
 
@@ -130,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if((keyCode == KEYCODE_ENTER) && event.getAction() == KeyEvent.ACTION_DOWN) {
                     onClick(search);
                 }
-                //url.setSelection(url.getText().toString().length());
                 return false;
             }
         });
@@ -168,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(webView.canGoBack()) {
                     webView.goBack();
                 } else {
-                    Toast.makeText(MainActivity.this,"没有上一页了",
+                    Toast.makeText(WebViewActivity.this,"没有上一页了",
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -176,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(webView.canGoForward()) {
                     webView.goForward();
                 } else {
-                    Toast.makeText(MainActivity.this,"没有下一页了",
+                    Toast.makeText(WebViewActivity.this,"没有下一页了",
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -186,11 +201,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.refresh:
                 webView.loadUrl(webView.getUrl().toString());
-                Toast.makeText(MainActivity.this,"正在刷新",
+                Toast.makeText(WebViewActivity.this,"正在刷新",
                         Toast.LENGTH_SHORT).show();
                 break;
             case R.id.detail:
-                Toast.makeText(MainActivity.this,"这里应该弹出详细界面",
+                Toast.makeText(WebViewActivity.this,"这里应该弹出详细界面",
                         Toast.LENGTH_SHORT).show();
                 break;
             default:

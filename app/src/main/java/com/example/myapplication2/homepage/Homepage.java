@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.myapplication2.R;
-import com.example.myapplication2.webview.MainActivity;
+import com.example.myapplication2.webview.WebViewActivity;
 
 import static android.view.KeyEvent.KEYCODE_ENTER;
 
@@ -42,7 +42,7 @@ public class Homepage extends AppCompatActivity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.search0 :
-                Intent intent = new Intent(Homepage.this, MainActivity.class);
+                Intent intent = new Intent(Homepage.this, WebViewActivity.class);
                 intent.putExtra("url0",url.getText().toString());
                 startActivity(intent);
         }

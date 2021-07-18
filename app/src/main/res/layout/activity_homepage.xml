@@ -34,62 +34,62 @@
             tools:ignore="MissingConstraints" />
 
     </LinearLayout>
-<!--    &lt;!&ndash;底部导航栏的使用？&ndash;&gt;-->
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/bottom_nav"-->
-<!--        app:menu="@menu/menu_bottom_nav" />-->
+    <!--    &lt;!&ndash;底部导航栏的使用？&ndash;&gt;-->
+    <!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+    <!--        android:id="@+id/bottom_nav"-->
+    <!--        app:menu="@menu/menu_bottom_nav" />-->
 
-        <LinearLayout
+    <LinearLayout
 
-            style="?buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="43dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:ignore="MissingConstraints">
+        style="?buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="MissingConstraints">
 
-            <Button
-                android:id="@+id/go_for"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="0dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:text="back"
-                tools:ignore="ButtonStyle" />
+        <Button
+            android:id="@+id/go_for"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="0dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:text="back"
+            tools:ignore="ButtonStyle" />
 
-            <Button
-                android:id="@+id/go_next"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="0dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:text="next"
-                tools:ignore="ButtonStyle" />
+        <Button
+            android:id="@+id/go_next"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="0dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:text="next"
+            tools:ignore="ButtonStyle" />
 
-            <Button
-                android:id="@+id/go_home"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:text="home"
-                tools:ignore="ButtonStyle" />
+        <Button
+            android:id="@+id/go_home"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:text="home"
+            tools:ignore="ButtonStyle" />
 
-            <Button
-                android:id="@+id/detail"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:text="detail"
-                tools:ignore="ButtonStyle" />
+        <Button
+            android:id="@+id/detail"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:text="detail"
+            tools:ignore="ButtonStyle" />
 
-        </LinearLayout>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
